@@ -15,6 +15,7 @@
      limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.google.samples.apps.nowinandroid.feature.interests">
+    package="com.google.samples.apps.nowinandroid.feature.interests"
+    android:sharedUserId="com.google.samples.apps.nowinandroid.uid">
 
 </manifest>
