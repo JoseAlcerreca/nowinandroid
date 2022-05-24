@@ -193,7 +193,7 @@ private const val TOPIC_LONG_DESC = "At vero eos et accusamus et iusto odio dign
 private const val TOPIC_URL = "URL"
 private const val TOPIC_IMAGE_URL = "Image URL"
 
-private val testTopics = listOf(
+val testTopics = listOf(
     FollowableTopic(
         Topic(
             id = "0",
