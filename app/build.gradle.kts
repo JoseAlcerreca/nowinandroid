@@ -24,6 +24,7 @@ plugins {
     id("jacoco")
     id("nowinandroid.android.application.firebase")
     id("com.google.android.gms.oss-licenses-plugin")
+    id("io.github.takahirom.roborazzi")
 }
 
 android {
@@ -79,6 +80,11 @@ android {
     namespace = "com.google.samples.apps.nowinandroid"
 }
 
+kapt {
+    // https://dagger.dev/hilt/gradle-setup.html#running-with-android-studio
+    correctErrorTypes = true
+}
+
 dependencies {
     implementation(project(":feature:interests"))
     implementation(project(":feature:foryou"))
@@ -121,6 +127,22 @@ dependencies {
     implementation(libs.androidx.profileinstaller)
     implementation(libs.kotlinx.coroutines.guava)
     implementation(libs.coil.kt)
+
+    // Core functions
+    testImplementation("io.github.takahirom.roborazzi:roborazzi:1.2.0-alpha-1")
+    // JUnit rules
+    testImplementation("io.github.takahirom.roborazzi:roborazzi-junit-rule:1.2.0-alpha-1")
+    testImplementation("org.robolectric:robolectric:4.10")
+    testImplementation(project(":core:testing"))
+    testImplementation(project(":core:datastore-test"))
+    testImplementation(project(":core:data-test"))
+    testImplementation(project(":core:network"))
+    testImplementation(libs.androidx.navigation.testing)
+    testImplementation(libs.accompanist.testharness)
+    testImplementation(kotlin("test"))
+    implementation(libs.work.testing)
+    kaptTest(libs.hilt.compiler)
+
 }
 
 // androidx.test is forcing JUnit, 4.12. This forces it to use 4.13
