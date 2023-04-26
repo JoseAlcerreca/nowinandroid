@@ -20,12 +20,21 @@ plugins {
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
     id("nowinandroid.spotless")
+    id("shot")
 }
+
 
 android {
     defaultConfig {
-        testInstrumentationRunner = "com.google.samples.apps.nowinandroid.core.testing.NiaTestRunner"
+        testInstrumentationRunner = "com.google.samples.apps.nowinandroid.interests.NiaTestRunner"
+
+        // Needed for Shot
+        testApplicationId = "com.google.samples.apps.nowinandroid.feature.interests.test"
     }
+}
+
+shot {
+    applicationId = "com.google.samples.apps.nowinandroid"
 }
 
 dependencies {
