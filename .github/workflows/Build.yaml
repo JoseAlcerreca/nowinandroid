@@ -56,6 +56,9 @@ jobs:
       - name: Run local tests
         run: ./gradlew testDemoDebug testProdDebug
 
+      - name: Run local screenshot tests (Roborazzi)
+        run: ./gradlew :app:verifyRoborazziDemoDebug
+
       - name: Upload build outputs (APKs)
         uses: actions/upload-artifact@v3
         with:
