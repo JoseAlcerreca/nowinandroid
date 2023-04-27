@@ -97,10 +97,12 @@ class NiaAppScreenSizesScreenshotTests {
             .build()
 
         // Initialize WorkManager for instrumentation tests.
-        WorkManagerTestInitHelper.initializeTestWorkManager(InstrumentationRegistry.getInstrumentation().context, config)
+        WorkManagerTestInitHelper.initializeTestWorkManager(
+            InstrumentationRegistry.getInstrumentation().context,
+            config,
+        )
 
         hiltRule.inject()
-
     }
 
     private fun testNiaAppScreenshotWithSize(width: Dp, height: Dp, screenshotName: String) {
@@ -126,7 +128,7 @@ class NiaAppScreenSizesScreenshotTests {
         testNiaAppScreenshotWithSize(
             610.dp,
             400.dp,
-            "compactWidth_compactHeight_showsNavigationBar"
+            "compactWidth_compactHeight_showsNavigationBar",
         )
     }
 
@@ -135,7 +137,7 @@ class NiaAppScreenSizesScreenshotTests {
         testNiaAppScreenshotWithSize(
             610.dp,
             400.dp,
-            "mediumWidth_compactHeight_showsNavigationRail"
+            "mediumWidth_compactHeight_showsNavigationRail",
         )
     }
 
@@ -144,7 +146,7 @@ class NiaAppScreenSizesScreenshotTests {
         testNiaAppScreenshotWithSize(
             900.dp,
             400.dp,
-            "expandedWidth_compactHeight_showsNavigationRail"
+            "expandedWidth_compactHeight_showsNavigationRail",
         )
     }
 
@@ -153,7 +155,7 @@ class NiaAppScreenSizesScreenshotTests {
         testNiaAppScreenshotWithSize(
             400.dp,
             500.dp,
-            "compactWidth_mediumHeight_showsNavigationBar"
+            "compactWidth_mediumHeight_showsNavigationBar",
         )
     }
 
@@ -162,7 +164,7 @@ class NiaAppScreenSizesScreenshotTests {
         testNiaAppScreenshotWithSize(
             610.dp,
             500.dp,
-            "mediumWidth_mediumHeight_showsNavigationRail"
+            "mediumWidth_mediumHeight_showsNavigationRail",
         )
     }
 
@@ -171,7 +173,7 @@ class NiaAppScreenSizesScreenshotTests {
         testNiaAppScreenshotWithSize(
             900.dp,
             500.dp,
-            "expandedWidth_mediumHeight_showsNavigationRail"
+            "expandedWidth_mediumHeight_showsNavigationRail",
         )
     }
 
@@ -180,7 +182,7 @@ class NiaAppScreenSizesScreenshotTests {
         testNiaAppScreenshotWithSize(
             400.dp,
             1000.dp,
-            "compactWidth_expandedHeight_showsNavigationBar"
+            "compactWidth_expandedHeight_showsNavigationBar",
         )
     }
 
@@ -189,7 +191,7 @@ class NiaAppScreenSizesScreenshotTests {
         testNiaAppScreenshotWithSize(
             610.dp,
             1000.dp,
-            "mediumWidth_expandedHeight_showsNavigationRail"
+            "mediumWidth_expandedHeight_showsNavigationRail",
         )
     }
 
@@ -198,7 +200,7 @@ class NiaAppScreenSizesScreenshotTests {
         testNiaAppScreenshotWithSize(
             900.dp,
             1000.dp,
-            "expandedWidth_expandedHeight_showsNavigationRail"
+            "expandedWidth_expandedHeight_showsNavigationRail",
         )
     }
 }
