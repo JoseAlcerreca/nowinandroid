@@ -18,14 +18,30 @@ plugins {
     id("nowinandroid.android.feature")
     id("nowinandroid.android.library.compose")
     id("nowinandroid.android.library.jacoco")
+    id("io.github.takahirom.roborazzi")
 }
 
 android {
     namespace = "com.google.samples.apps.nowinandroid.feature.foryou"
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
     implementation(libs.kotlinx.datetime)
     implementation(libs.androidx.activity.compose)
     implementation(libs.accompanist.permissions)
+
+    testImplementation("io.github.takahirom.roborazzi:roborazzi:1.2.0-alpha-1")
+    // JUnit rules
+    testImplementation("io.github.takahirom.roborazzi:roborazzi-junit-rule:1.2.0-alpha-1")
+    testImplementation("org.robolectric:robolectric:4.10.1")
+    testImplementation(libs.accompanist.testharness)
+
+    debugImplementation(libs.androidx.compose.ui.testManifest)
+
 }
