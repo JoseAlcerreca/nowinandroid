@@ -5,7 +5,8 @@ on:
     branches:
       - main
   pull_request:
-
+permissions:
+  contents: write
 concurrency:
   group: build-${{ github.ref }}
   cancel-in-progress: true
@@ -56,8 +57,20 @@ jobs:
       - name: Run local tests
         run: ./gradlew testDemoDebug testProdDebug
 
-      - name: Run local screenshot tests (Roborazzi)
-        run: ./gradlew :app:verifyRoborazziDemoDebug
+      - name: Run all local screenshot tests (Roborazzi)
+        id: screenshots-verify
+        run: ./gradlew verifyRoborazziDemoDebug
+
+      # Runs if previous job failed
+      - name: Push new screenshots
+        if: steps.screenshots-verify.outcome != 'success'
+        run: |
+          ./gradlew recordRoborazziDemoDebug
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add ./screenshots/*
+          git commit -m "🤖 Updates screenshots"
+          git push
 
       - name: Upload build outputs (APKs)
         uses: actions/upload-artifact@v3
