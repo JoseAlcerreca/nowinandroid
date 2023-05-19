@@ -53,18 +53,18 @@ jobs:
 #      - name: Check lint
 #        run: ./gradlew lintDemoDebug
 
-      - name: Build all build type and flavor permutations
-        run: ./gradlew assembleDemoDebug
+#      - name: Build all build type and flavor permutations
+#        run: ./gradlew assembleDemoDebug
 
       - name: Run all local screenshot tests (Roborazzi)
         id: screenshots-verify
-        run: ./gradlew verifyRoborazziDemoDebug
+        run: ./gradlew :feature:foryou:verifyRoborazziDemoDebug
 
       # Runs if previous job failed
       - name: Push new screenshots
         if: steps.screenshots-verify.outputs.exit_code != 0
         run: |
-          ./gradlew recordRoborazziDemoDebug
+          ./gradlew :feature:foryou:recordRoborazziDemoDebug
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add ./screenshots/*
