@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           lfs: true
-          ref: ${{ github.ref_name }} # To enable git push
+          ref: ${{ env.BASE_BRANCH }} # To enable git push
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
