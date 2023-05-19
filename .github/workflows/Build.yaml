@@ -64,8 +64,8 @@ jobs:
         run: ./gradlew :feature:foryou:verifyRoborazziDemoDebug
 
       # Runs if previous job failed
-      - name: Push new screenshots
-        if: steps.screenshots-verify.outputs.exit_code != 0
+      - name: Push new screenshots if failed
+        if: always() # TODO steps.screenshots-verify.outputs.exit_code != 0
         run: |
           ./gradlew :feature:foryou:recordRoborazziDemoDebug
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
