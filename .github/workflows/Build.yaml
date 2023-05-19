@@ -61,13 +61,13 @@ jobs:
 
       - name: Run all local screenshot tests (Roborazzi)
         id: screenshots-verify
-        run: ./gradlew verifyRoborazziDemoDebug
+        run: ./gradlew :feature:foryou:verifyRoborazziDemoDebug
 
       # Runs if previous job failed
       - name: Push new screenshots
         if: steps.screenshots-verify.outputs.exit_code != 0
         run: |
-          ./gradlew recordRoborazziDemoDebug
+          ./gradlew :feature:foryou:recordRoborazziDemoDebug
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add ./screenshots/*
@@ -105,7 +105,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
+
       - name: Copy CI gradle.properties
         run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
 
