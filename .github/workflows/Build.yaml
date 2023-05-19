@@ -66,7 +66,7 @@ jobs:
 
       # Runs if previous job failed
       - name: Push new screenshots if failed
-        if: always() # TODO steps.screenshots-verify.outputs.exit_code != 0
+        if: always() # TODO steps.screenshots-verify.outputs.exit_code != 0 #TODO: only on pull_request
         run: |
           ./gradlew :feature:foryou:recordRoborazziDemoDebug
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
