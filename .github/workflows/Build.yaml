@@ -65,7 +65,7 @@ jobs:
 
       # Runs if previous job failed
       - name: Push new screenshots
-        if: steps.screenshots-verify.outcome != 'success'
+        if: steps.screenshots-verify.outputs.exit_code != 0
         run: |
           ./gradlew recordRoborazziDemoDebug
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
