@@ -61,9 +61,17 @@ jobs:
         continue-on-error: true
         run: git diff --exit-code --quiet -- screenshots/ && exit 0 || exit 1
 
-      - name: Run all local screenshot tests (Roborazzi) if failed
+      - name: Check out base branch and record screenshots if failed
         if: steps.md5check.outcome == 'failure'
-        run: ./gradlew :feature:foryou:verifyAndRecordRoborazziDemoDebug
+        run: |
+          git checkout {{ github.base_ref }}
+          ./gradlew :feature:foryou:recordRoborazziDemoDebug
+
+      - name: Compare screenshots
+        if: steps.md5check.outcome == 'failure'
+        run: |
+          git checkout ${{ github.event.pull_request.head.ref }}
+          ./gradlew :feature:foryou:compareRoborazziDemoDebug
 
       - name: Upload screenshots to build artifacts
         if: steps.md5check.outcome == 'failure'
