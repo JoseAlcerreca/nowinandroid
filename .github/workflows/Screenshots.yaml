@@ -62,25 +62,25 @@ jobs:
         run: git diff --exit-code --quiet -- screenshots/ && exit 0 || exit 1
 
       - name: Run all local screenshot tests (Roborazzi) if failed
-        if: always() && steps.md5-check.outputs.exit_code != 0
+        if: ${{ steps.md5-check.outputs.exit_code != 0 }}
         run: ./gradlew :feature:foryou:verifyAndRecordRoborazziDemoDebug
 
       - name: Upload screenshots to build artifacts
-        if: always() && steps.md5-check.outputs.exit_code != 0
+        if: ${{ steps.md5-check.outputs.exit_code != 0 }}
         uses: actions/upload-artifact@v3
         with:
           name: screenshots
           path: screenshots/*_compare.png
 
       - name: Generate the new md5 hashes
-        if: always() && steps.md5-check.outputs.exit_code != 0
+        if: ${{ steps.md5-check.outputs.exit_code != 0 }}
         run: |
           ls screenshots/
           find screenshots/ -type f -name "*.png" ! -name "*_compare.png" -exec md5sum {} + | awk '{print $1 > $2 ".md5"}' 
 
       # Runs if previous job failed
       - name: Push new screenshot md5s if failed
-        if: always() && steps.md5-check.outputs.exit_code != 0
+        if: ${{ steps.md5-check.outputs.exit_code != 0 }}
         run: |
           ./gradlew :feature:foryou:recordRoborazziDemoDebug
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
