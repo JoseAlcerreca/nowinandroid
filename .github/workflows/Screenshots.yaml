@@ -61,6 +61,10 @@ jobs:
         continue-on-error: true
         run: git diff --exit-code --quiet -- screenshots/ && exit 0 || exit 1
 
+      - name: debug
+        if: always()
+        run: echo ${{ steps.md5-check.outputs }}
+
       - name: Run all local screenshot tests (Roborazzi) if failed
         if: ${{ steps.md5-check.outputs.exit_code != 0 }}
         run: ./gradlew :feature:foryou:verifyAndRecordRoborazziDemoDebug
