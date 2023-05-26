@@ -45,30 +45,21 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-#
-#      - name: Record screenshot tests (Roborazzi)
-#        id: screenshots-verify
-#        run: |
-#          ./gradlew :feature:foryou:recordRoborazziDemoDebug
+
+      - name: Record screenshot tests (Roborazzi)
+        id: screenshots-verify
+        run: |
+          ./gradlew :feature:foryou:recordRoborazziDemoDebug
 
       - name: Generate md5 hashes
         run: | 
           ls screenshots/
           find screenshots/ -type f -name "*.png" -exec md5sum {} + | awk '{print $1 > $2 ".md5"}' 
 
-#      - name: Fail if md5 hashes changed
-#        id: md5check
-#        continue-on-error: true
-#        run: git diff --exit-code --quiet -- screenshots/ && exit 0 || exit 1
-
-      - name: Just fail
+      - name: Fail if md5 hashes changed
         id: md5check
         continue-on-error: true
-        run: exit 0
-
-      - name: debug
-        if: always()
-        run: echo ${{ steps.md5check.outcome }}
+        run: git diff --exit-code --quiet -- screenshots/ && exit 0 || exit 1
 
       - name: Run all local screenshot tests (Roborazzi) if failed
         if: steps.md5check.outcome == 'failure'
