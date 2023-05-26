@@ -60,7 +60,6 @@ jobs:
         id: screenshots-verify
         run: | 
           ./gradlew :feature:foryou:recordRoborazziDemoDebug
-        
 
       - name: Generate md5 hashes
         run: | 
@@ -72,7 +71,6 @@ jobs:
           git checkout ${{ github.event.pull_request.head.ref }} 
 
       - name: Run all local screenshot tests (Roborazzi)
-        id: screenshots-verify
         run: ./gradlew :feature:foryou:verifyAndRecordRoborazziDemoDebug
 
       - name: Generate the new md5 hashes
