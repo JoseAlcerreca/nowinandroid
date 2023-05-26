@@ -133,7 +133,7 @@ internal fun ForYouScreen(
 
     LazyVerticalGrid(
         columns = Adaptive(300.dp),
-        contentPadding = PaddingValues(32.dp),
+        contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
         modifier = modifier
