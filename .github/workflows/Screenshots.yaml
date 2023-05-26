@@ -20,7 +20,7 @@ jobs:
       - name: Checkout base branch first
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.base_ref }}
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
@@ -45,17 +45,9 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-#
-#      # TODO: Explain why --no-configuration-cache
-#      - name: Check spotless
-#        run: ./gradlew spotlessCheck --init-script gradle/init.gradle.kts --no-configuration-cache
-#
-#      - name: Check lint
-#        run: ./gradlew lintDemoDebug
 
-#      - name: Build all build type and flavor permutations
-#        run: ./gradlew assembleDemoDebug
-
+  screenshot-verify:
+    needs: build
       - name: Record screenshot tests (Roborazzi)
         id: screenshots-verify
         run: | 
@@ -66,12 +58,22 @@ jobs:
           ls screenshots/
           find screenshots/ -type f -name "*.png" -exec md5sum {} + | awk '{print $1 > $2 ".md5"}' 
 
-      - name: Check out the PR branch
-        run: | 
-          git checkout ${{ github.event.pull_request.head.ref }} 
+      - name: Fail if md5 hashes changed
+        id: md5-check
+        continue-on-error: true
+        run: git diff --exit-code --quiet -- screenshots/ && exit 0 || exit 1
 
-      - name: Run all local screenshot tests (Roborazzi)
+  screenshot-generate-new:
+    needs: screenshot-verify
+    if: always() && steps.md5-check.outputs.exit_code != 0
+      - name: Run all local screenshot tests (Roborazzi) if failed
         run: ./gradlew :feature:foryou:verifyAndRecordRoborazziDemoDebug
+
+      - name: Upload screenshots to build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: screenshots/*_compare.png
 
       - name: Generate the new md5 hashes
         run: |
@@ -80,7 +82,7 @@ jobs:
 
       # Runs if previous job failed
       - name: Push new screenshot md5s if failed
-        if: always() # TODO steps.screenshots-verify.outputs.exit_code != 0 #TODO: github.event_name == 'pull_request'
+        if: always() && steps.screenshots-verify.outputs.exit_code != 0 #TODO: github.event_name == 'pull_request'
         run: |
           ./gradlew :feature:foryou:recordRoborazziDemoDebug
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -89,21 +91,3 @@ jobs:
           git add screenshots/*.md5
           git commit -m "🤖 Updates screenshots"
           git push
-
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}  # To enable git push
-
-      - name: Upload build outputs (APKs)
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-outputs
-          path: app/build/outputs
-
-      - name: Upload build reports
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-reports
-          path: app/build/reports
