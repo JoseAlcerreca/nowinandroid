@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 60
 
     steps:
-      - name: Checkout base branch first
+      - name: Checkout
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.ref }}
@@ -64,6 +64,7 @@ jobs:
       - name: Check out base branch and record screenshots if failed
         if: steps.md5check.outcome == 'failure'
         run: |
+          git fetch origin ${{ github.base_ref }} --depth 1
           git checkout ${{ github.base_ref }}
           ./gradlew :feature:foryou:recordRoborazziDemoDebug
 
