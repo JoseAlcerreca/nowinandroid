@@ -46,12 +46,6 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-  screenshot-verify:
-    runs-on: ubuntu-latest
-    needs: build
-    outputs:
-      output1: ${{ steps.md5-check.outputs.exit_code }}
-    steps:
       - name: Record screenshot tests (Roborazzi)
         id: screenshots-verify
         run: | 
@@ -67,29 +61,26 @@ jobs:
         continue-on-error: true
         run: git diff --exit-code --quiet -- screenshots/ && exit 0 || exit 1
 
-  screenshot-generate-new:
-    runs-on: ubuntu-latest
-    needs: screenshot-verify
-    if: always() && needs.screenshot-verify.outputs.output1 != 0
-
-    steps:
       - name: Run all local screenshot tests (Roborazzi) if failed
+        if: always() && steps.md5-check.outputs.exit_code != 0
         run: ./gradlew :feature:foryou:verifyAndRecordRoborazziDemoDebug
 
       - name: Upload screenshots to build artifacts
+        if: always() && steps.md5-check.outputs.exit_code != 0
         uses: actions/upload-artifact@v3
         with:
           name: screenshots
           path: screenshots/*_compare.png
 
       - name: Generate the new md5 hashes
+        if: always() && steps.md5-check.outputs.exit_code != 0
         run: |
           ls screenshots/
           find screenshots/ -type f -name "*.png" ! -name "*_compare.png" -exec md5sum {} + | awk '{print $1 > $2 ".md5"}' 
 
       # Runs if previous job failed
       - name: Push new screenshot md5s if failed
-        if: always() && steps.screenshots-verify.outputs.exit_code != 0 #TODO: github.event_name == 'pull_request'
+        if: always() && steps.md5-check.outputs.exit_code != 0
         run: |
           ./gradlew :feature:foryou:recordRoborazziDemoDebug
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
