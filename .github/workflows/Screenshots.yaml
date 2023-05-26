@@ -48,6 +48,7 @@ jobs:
 
   screenshot-verify:
     needs: build
+    steps:
       - name: Record screenshot tests (Roborazzi)
         id: screenshots-verify
         run: | 
@@ -66,6 +67,8 @@ jobs:
   screenshot-generate-new:
     needs: screenshot-verify
     if: always() && steps.md5-check.outputs.exit_code != 0
+
+    steps:
       - name: Run all local screenshot tests (Roborazzi) if failed
         run: ./gradlew :feature:foryou:verifyAndRecordRoborazziDemoDebug
 
