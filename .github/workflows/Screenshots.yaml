@@ -64,7 +64,7 @@ jobs:
       - name: Just fail
         id: md5check
         continue-on-error: true
-        run: exit 1
+        run: exit 0
 
       - name: debug
         if: always()
