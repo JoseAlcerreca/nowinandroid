@@ -49,6 +49,8 @@ jobs:
   screenshot-verify:
     runs-on: ubuntu-latest
     needs: build
+    outputs:
+      output1: ${{ steps.md5-check.outputs.exit_code }}
     steps:
       - name: Record screenshot tests (Roborazzi)
         id: screenshots-verify
@@ -68,7 +70,7 @@ jobs:
   screenshot-generate-new:
     runs-on: ubuntu-latest
     needs: screenshot-verify
-    if: always() && steps.md5-check.outputs.exit_code != 0
+    if: always() && needs.screenshot-verify.outputs.output1 != 0
 
     steps:
       - name: Run all local screenshot tests (Roborazzi) if failed
