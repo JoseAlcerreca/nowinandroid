@@ -64,7 +64,7 @@ jobs:
       - name: Check out base branch and record screenshots if failed
         if: steps.md5check.outcome == 'failure'
         run: |
-          git checkout {{ github.base_ref }}
+          git checkout ${{ github.base_ref }}
           ./gradlew :feature:foryou:recordRoborazziDemoDebug
 
       - name: Compare screenshots
