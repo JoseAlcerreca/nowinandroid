@@ -86,8 +86,9 @@ jobs:
       - name: Generate the new md5 hashes
         if: steps.md5check.outcome == 'failure'
         run: |
-          ls screenshots/
+          rm screenshots/*.md5
           find screenshots/ -type f -name "*.png" ! -name "*_compare.png" -exec md5sum {} + | awk '{print $1 > $2 ".md5"}' 
+          ls -al screenshots/
 
       # Runs if previous job failed
       - name: Push new screenshot md5s if failed
