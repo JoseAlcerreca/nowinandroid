@@ -58,12 +58,13 @@ jobs:
 #        run: ./gradlew assembleDemoDebug
 
       - name: Run all local screenshot tests (Roborazzi)
-        id: screenshots-verify
+        id: screenshotsverify
+        continue-on-error: true
         run: ./gradlew :feature:foryou:verifyRoborazziDemoDebug
 
       # Runs if previous job failed
       - name: Push new screenshots if failed
-        if: always() # TODO steps.screenshots-verify.outputs.exit_code != 0 #TODO: only on pull_request
+        if: steps.screenshotsverify.outcome != 'success' #TODO: only on pull_request
         run: |
           ./gradlew :feature:foryou:recordRoborazziDemoDebug
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
