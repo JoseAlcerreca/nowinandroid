@@ -17,26 +17,15 @@
 package com.google.samples.apps.nowinandroid.feature.foryou
 
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.test.junit4.createEmptyComposeRule
-import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
-import androidx.test.core.app.ActivityScenario
-import com.github.takahirom.roborazzi.captureRoboImage
-import com.google.accompanist.testharness.TestHarness
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import com.google.samples.apps.nowinandroid.core.designsystem.theme.NiaTheme
+import com.google.samples.apps.nowinandroid.core.testing.util.captureMultiDevice
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState
 import com.google.samples.apps.nowinandroid.core.ui.NewsFeedUiState.Success
 import com.google.samples.apps.nowinandroid.core.ui.UserNewsResourcePreviewParameterProvider
 import com.google.samples.apps.nowinandroid.feature.foryou.OnboardingUiState.Loading
 import com.google.samples.apps.nowinandroid.feature.foryou.OnboardingUiState.NotShown
 import dagger.hilt.android.testing.HiltTestApplication
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,7 +36,7 @@ import org.robolectric.annotation.LooperMode
 
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(application = HiltTestApplication::class, qualifiers = "w1000dp-h1000dp")
+@Config(application = HiltTestApplication::class, qualifiers = "w1000dp-h1000dp", sdk = [33])
 @LooperMode(LooperMode.Mode.PAUSED)
 class ForYouScreenScreenshotTests {
 
@@ -55,25 +44,13 @@ class ForYouScreenScreenshotTests {
      * Use a test activity to set the content on.
      */
     @get:Rule
-    val composeTestRule = createEmptyComposeRule()
-
-    private lateinit var scenario: ActivityScenario<ComponentActivity>
+    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
     private val userNewsResources = UserNewsResourcePreviewParameterProvider().values.first()
 
-    @Before
-    fun setup() {
-        scenario = ActivityScenario.launch(ComponentActivity::class.java)
-    }
-
-    @After
-    fun tearDown() {
-        scenario.close()
-    }
-
     @Test
     fun testForYouScreenPopulatedFeed() {
-        captureMultiDevice("ForYouScreenPopulatedFeed") {
+        composeTestRule.captureMultiDevice("ForYouScreenPopulatedFeed") {
             NiaTheme {
                 ForYouScreen(
                     isSyncing = false,
@@ -86,6 +63,8 @@ class ForYouScreenScreenshotTests {
                     onNewsResourcesCheckedChanged = { _, _ -> },
                     onNewsResourceViewed = {},
                     onTopicClick = {},
+                    deepLinkedUserNewsResource = null,
+                    onDeepLinkOpened = {},
                 )
             }
         }
@@ -93,7 +72,7 @@ class ForYouScreenScreenshotTests {
 
     @Test
     fun testForYouScreenLoading() {
-        captureMultiDevice("ForYouScreenLoading") {
+        composeTestRule.captureMultiDevice("ForYouScreenLoading") {
             NiaTheme {
                 ForYouScreen(
                     isSyncing = false,
@@ -104,6 +83,8 @@ class ForYouScreenScreenshotTests {
                     onNewsResourcesCheckedChanged = { _, _ -> },
                     onNewsResourceViewed = {},
                     onTopicClick = {},
+                    deepLinkedUserNewsResource = null,
+                    onDeepLinkOpened = {},
                 )
             }
         }
@@ -111,7 +92,7 @@ class ForYouScreenScreenshotTests {
 
     @Test
     fun testForYouScreenTopicSelection() {
-        captureMultiDevice("ForYouScreenTopicSelection") {
+        composeTestRule.captureMultiDevice("ForYouScreenTopicSelection") {
             NiaTheme {
                 ForYouScreen(
                     isSyncing = false,
@@ -127,6 +108,8 @@ class ForYouScreenScreenshotTests {
                     onNewsResourcesCheckedChanged = { _, _ -> },
                     onNewsResourceViewed = {},
                     onTopicClick = {},
+                    deepLinkedUserNewsResource = null,
+                    onDeepLinkOpened = {},
                 )
             }
         }
@@ -134,7 +117,7 @@ class ForYouScreenScreenshotTests {
 
     @Test
     fun testForYouScreenPopulatedAndLoading() {
-        captureMultiDevice("ForYouScreenPopulatedAndLoading") {
+        composeTestRule.captureMultiDevice("ForYouScreenPopulatedAndLoading") {
             NiaTheme {
                 ForYouScreen(
                     isSyncing = true,
@@ -147,49 +130,10 @@ class ForYouScreenScreenshotTests {
                     onNewsResourcesCheckedChanged = { _, _ -> },
                     onNewsResourceViewed = {},
                     onTopicClick = {},
+                    deepLinkedUserNewsResource = null,
+                    onDeepLinkOpened = {},
                 )
             }
         }
-    }
-
-    private fun captureMultiDevice(screenshotName: String, body: @Composable () -> Unit) {
-        listOf(
-            "phone" to "spec:shape=Normal,width=640,height=360,unit=dp,dpi=480",
-            "foldable" to "spec:shape=Normal,width=673,height=841,unit=dp,dpi=480",
-            "tablet" to "spec:shape=Normal,width=1280,height=800,unit=dp,dpi=480",
-        ).forEach {
-            captureForDevice(it.first, it.second, screenshotName, body)
-        }
-    }
-
-    private fun captureForDevice(
-        deviceName: String,
-        deviceSpec: String,
-        screenshotName: String,
-        body: @Composable () -> Unit,
-    ) {
-        val (width, height) = extractSpecs(deviceSpec)
-
-        scenario.onActivity { activity ->
-            activity.setContent {
-                CompositionLocalProvider(
-                    LocalInspectionMode provides true,
-                ) {
-                    TestHarness(size = DpSize(width.dp, height.dp)) {
-                        body()
-                    }
-                }
-            }
-        }
-        composeTestRule.onRoot()
-            .captureRoboImage("../../screenshots/${screenshotName}_$deviceName.png")
-    }
-
-    private fun extractSpecs(deviceSpec: String): List<Int> {
-        val specs = deviceSpec.substringAfter("spec:")
-            .split(",").map { it.split("=") }.associate { it[0] to it[1] }
-        val width = specs["width"]?.toInt() ?: 640
-        val height = specs["height"]?.toInt() ?: 480
-        return listOf(width, height)
     }
 }

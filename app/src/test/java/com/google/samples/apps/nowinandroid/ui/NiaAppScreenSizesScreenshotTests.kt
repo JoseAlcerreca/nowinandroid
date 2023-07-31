@@ -35,6 +35,7 @@ import com.google.samples.apps.nowinandroid.core.data.repository.CompositeUserNe
 import com.google.samples.apps.nowinandroid.core.data.util.NetworkMonitor
 import com.google.samples.apps.nowinandroid.core.testing.repository.TestNewsRepository
 import com.google.samples.apps.nowinandroid.core.testing.repository.TestUserDataRepository
+import com.google.samples.apps.nowinandroid.core.testing.util.DefaultRoborazziOptions
 import com.google.samples.apps.nowinandroid.uitesthiltmanifest.HiltComponentActivity
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -57,7 +58,7 @@ import javax.inject.Inject
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(application = HiltTestApplication::class, qualifiers = "w1000dp-h1000dp")
+@Config(application = HiltTestApplication::class, qualifiers = "w1000dp-h1000dp", sdk=[33])
 @LooperMode(LooperMode.Mode.PAUSED)
 @HiltAndroidTest
 class NiaAppScreenSizesScreenshotTests {
@@ -121,7 +122,9 @@ class NiaAppScreenSizesScreenshotTests {
             }
         }
         composeTestRule.onRoot()
-            .captureRoboImage("screenshots/$screenshotName.png")
+            .captureRoboImage("src/test/screenshots/${screenshotName}.png",
+                roborazziOptions = DefaultRoborazziOptions
+            )
     }
 
     @Test

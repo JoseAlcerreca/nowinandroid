@@ -24,7 +24,6 @@ plugins {
     id("jacoco")
     id("nowinandroid.android.application.firebase")
     id("com.google.android.gms.oss-licenses-plugin")
-    id("io.github.takahirom.roborazzi")
 }
 
 android {
@@ -80,11 +79,6 @@ android {
     namespace = "com.google.samples.apps.nowinandroid"
 }
 
-kapt {
-    // https://dagger.dev/hilt/gradle-setup.html#running-with-android-studio
-    correctErrorTypes = true
-}
-
 dependencies {
     implementation(project(":feature:interests"))
     implementation(project(":feature:foryou"))
@@ -129,10 +123,6 @@ dependencies {
     implementation(libs.coil.kt)
 
     // Core functions
-    testImplementation("io.github.takahirom.roborazzi:roborazzi:1.2.0-alpha-1")
-    // JUnit rules
-    testImplementation("io.github.takahirom.roborazzi:roborazzi-junit-rule:1.2.0-alpha-1")
-    testImplementation("org.robolectric:robolectric:4.10.1")
     testImplementation(project(":core:testing"))
     testImplementation(project(":core:datastore-test"))
     testImplementation(project(":core:data-test"))
