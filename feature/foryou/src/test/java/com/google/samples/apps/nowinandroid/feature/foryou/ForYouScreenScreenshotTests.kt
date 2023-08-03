@@ -96,10 +96,7 @@ class ForYouScreenScreenshotTests {
             NiaTheme {
                 ForYouScreen(
                     isSyncing = false,
-                    onboardingUiState = OnboardingUiState.Shown(
-                        topics = userNewsResources.flatMap { news -> news.followableTopics }
-                            .distinctBy { it.topic.id },
-                    ),
+                    onboardingUiState = OnboardingUiState.Loading,
                     feedState = NewsFeedUiState.Success(
                         feed = userNewsResources,
                     ),
