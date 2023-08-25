@@ -1,0 +1,16 @@
+# cloudbuild.yaml
+# Triggers Google Cloud Build CI pipeline
+# Build history go to console https://cloud.google.com/build
+steps:
+  # Set a persistent volume according to https://cloud.google.com/cloud-build/docs/build-config (search for volumes)
+  - name: 'ubuntu'
+    volumes:
+      - name: 'vol1'
+        path: '/persistent_volume'
+    args: ['cp', '-a', '.', '/persistent_volume']
+  # Build APK with Gradle Image from mounted /persistent_volume using name: vol1
+  - name: 'gcr.io/cloud-builders/docker'
+    volumes:
+      - name: 'vol1'
+        path: '/persistent_volume'
+    args: ['run', '-v', 'vol1:/home/app', '--rm', 'us-docker.pkg.dev/android-devrel-ci/us.gcr.io/android-build:tag1', '/bin/sh', '-c', 'cd /home/app && ./gradlew lintDemoDebug']
