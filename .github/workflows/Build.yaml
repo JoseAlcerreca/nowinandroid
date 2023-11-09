@@ -69,13 +69,15 @@ jobs:
       # Run local tests after screenshot tests to avoid wrong UP-TO-DATE. TODO: Ignore screenshots.
       - name: Run local tests
         if: always()
-        run: ./gradlew testDemoDebug testProdDebug :lint:test
+        # Ignore OssLicensesTasks so that config cache is used
+        run: ./gradlew testDemoDebug testProdDebug :lint:test -x demoDebugOssLicensesTask
 
       - name: Check spotless
         run: ./gradlew spotlessCheck --init-script gradle/init.gradle.kts --no-configuration-cache
 
       - name: Build all build type and flavor permutations
-        run: ./gradlew assemble
+        # Ignore OssLicensesTasks so that config cache is used
+        run: ./gradlew assemble -x demoDebugOssLicensesTask
 
       - name: Upload build outputs (APKs)
         uses: actions/upload-artifact@v3
@@ -127,7 +129,8 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: Build projects before running emulator
-        run: ./gradlew packageDemoDebug packageDemoDebugAndroidTest
+        # Ignore OssLicensesTasks so that config cache is used
+        run: ./gradlew packageDemoDebug packageDemoDebugAndroidTest -x demoDebugOssLicensesTask
 
       - name: Run instrumentation tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -137,7 +140,8 @@ jobs:
           disable-animations: true
           disk-size: 6000M
           heap-size: 600M
-          script: ./gradlew connectedDemoDebugAndroidTest --daemon
+          # Ignore OssLicensesTasks so that config cache is used
+          script: ./gradlew connectedDemoDebugAndroidTest -x demoDebugOssLicensesTask --daemon
 
       - name: Upload test reports
         if: always()
