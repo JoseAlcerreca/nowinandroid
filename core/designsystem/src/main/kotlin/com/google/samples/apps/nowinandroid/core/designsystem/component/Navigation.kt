@@ -210,11 +210,11 @@ fun NiaNavigationPreview() {
  */
 object NiaNavigationDefaults {
     @Composable
-    fun navigationContentColor() = MaterialTheme.colorScheme.onSurfaceVariant
+    fun navigationContentColor() = MaterialTheme.colorScheme.surfaceVariant
 
     @Composable
-    fun navigationSelectedItemColor() = MaterialTheme.colorScheme.onPrimaryContainer
+    fun navigationSelectedItemColor() = MaterialTheme.colorScheme.primaryContainer
 
     @Composable
-    fun navigationIndicatorColor() = MaterialTheme.colorScheme.primaryContainer
+    fun navigationIndicatorColor() = MaterialTheme.colorScheme.onPrimaryContainer
 }
